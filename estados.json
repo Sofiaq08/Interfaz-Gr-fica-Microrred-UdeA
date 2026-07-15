@@ -1,0 +1,18 @@
+{
+  "ultima_actualizacion": "2026-07-14 12:40:44",
+  "estado_operador_red": true,
+  "estado_fronius": false,
+  "estado_carga_elec": true,
+  "estado_electrolizador": true,
+  "estado_enphase": true,
+  "estado_gab_ilum": false,
+  "estado_piso1_ilum": true,
+  "estado_piso2_ilum": true,
+  "estado_piso3_ilum": true,
+  "estado_gab_exp": false,
+  "estado_piso1_exp": true,
+  "estado_piso2_exp": true,
+  "estado_quattro_or": false,
+  "setpoint_potencia_kw": 5.0,
+  "modo_isla": false
+}
