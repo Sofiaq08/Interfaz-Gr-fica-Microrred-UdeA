@@ -11,6 +11,11 @@
 # =============================================================================
 
 import random
+from config import (
+    INFLUX_URL, INFLUX_TOKEN, INFLUX_ORG,
+    INFLUX_BUCKET_DATA, INFLUX_BUCKET_CTRL,
+    MEASUREMENT_DATA, MEASUREMENT_CTRL
+)
 from datetime import datetime, timezone
 
 # -----------------------------------------------------------------------------
@@ -46,17 +51,52 @@ _estados = {
 
 def get_estados() -> dict:
     """
-    Devuelve una copia del estado actual de todos los contactores
-    y las variables de control.
-
-    Retorna:
-        dict con las mismas claves que _estados.
-
-    Cuando se conecte InfluxDB:
-        Reemplazar el return por una query Flux al bucket de control
-        que lea el último punto de cada campo estado_* y las variables nuevas.
+    Lee el último estado de todos los contactores y variables de control
+    desde el bucket Control de InfluxDB.
     """
-    return dict(_estados)
+    from influxdb_client import InfluxDBClient
+
+    INFLUX_BUCKET = INFLUX_BUCKET_CTRL
+
+    try:
+        client = InfluxDBClient(
+            url=INFLUX_URL,
+            token=INFLUX_TOKEN,
+            org=INFLUX_ORG
+        )
+        query_api = client.query_api()
+
+        query = f'''
+        from(bucket: "{INFLUX_BUCKET}")
+          |> range(start: -30d)
+          |> filter(fn: (r) => r._measurement == "{MEASUREMENT_CTRL}")
+          |> last()
+        '''
+
+        resultado = query_api.query(query=query, org=INFLUX_ORG)
+        client.close()
+
+        # Partir del estado por defecto y sobreescribir con lo que viene de InfluxDB
+        estados = dict(_estados)
+        for tabla in resultado:
+            for registro in tabla.records:
+                campo = registro.get_field()
+                valor = registro.get_value()
+                if campo in estados:
+                    # Convertir 0/1 a bool para los contactores
+                    if campo.startswith("estado_") or campo == "modo_isla":
+                        estados[campo] = bool(int(valor))
+                    else:
+                        estados[campo] = valor
+
+        print("Estados leídos de InfluxDB:", estados)   #NUEVOOOO
+
+        return estados
+
+    except Exception as e:
+        print(f"Error InfluxDB get_estados: {e}")
+        print("Usando estados en memoria")   #NUEVOOO
+        return dict(_estados)
 
 
 def get_estado_contactor(nombre: str) -> bool:
@@ -79,53 +119,61 @@ def get_estado_contactor(nombre: str) -> bool:
 
 def get_mediciones() -> dict:
     """
-    Devuelve las últimas mediciones del sistema.
+    Devuelve las últimas mediciones del sistema desde InfluxDB.
 
-    Nombres de campo: idénticos a las columnas del CSV de InfluxDB para
-    que el cambio futuro sea un simple swap de esta función.
-
-    Retorna dict con:
-        _time             — timestamp de la medición (datetime UTC)
-        CurrentBattery    — corriente de batería [A]
-        PowerBattery      — potencia de batería [W]
-        SoCBattery        — estado de carga batería [%]  0-100
-        VoltageBattery    — tensión de batería [V]
-        carga_total       — potencia total de carga [kW]
-        humidity          — humedad relativa [%]
-        irradiance        — irradiancia solar [W/m²]
-        power_fronius     — potencia activa inversor Fronius [kW]
-        power_grid        — potencia activa operador de red [kW]
-        power_quattro     — potencia activa inversores Quattro [W]
-        rollangle         — ángulo roll del panel [°]
-        temperature       — temperatura ambiente [°C]
-        tiltangle         — ángulo tilt del panel [°]
-
-    Cuando se conecte InfluxDB:
-        Reemplazar todo el cuerpo por una query Flux que traiga
-        el último punto de _measurement con todos estos campos.
+    Nombres de campo: idénticos a las columnas del CSV de InfluxDB.
     """
-    return {
-        "_time":          datetime.now(timezone.utc),
+    from influxdb_client import InfluxDBClient
 
-        # ── Batería ──────────────────────────────────────────────────────────
-        "CurrentBattery":  round(random.uniform(-50.0,  50.0),  1),   # A  (neg = carga)
-        "PowerBattery":    round(random.uniform(-2400,  2400),  0),   # W
-        "SoCBattery":      round(random.uniform(20,     95),    0),   # %
-        "VoltageBattery":  round(random.uniform(46.0,   54.0),  2),   # V
 
-        # ── Potencias ─────────────────────────────────────────────────────────
-        "carga_total":     round(random.uniform(1.0,    9.0),   2),   # kW
-        "power_fronius":   round(random.uniform(0.0,    10.0),  2),   # kW
-        "power_grid":      round(random.uniform(-5.0,   15.0),  2),   # kW (neg = exporta)
-        "power_quattro":   round(random.uniform(0,      15000), 0),   # W
+    INFLUX_BUCKET = INFLUX_BUCKET_DATA
 
-        # ── Meteorología y panel solar ────────────────────────────────────────
-        "humidity":        round(random.uniform(40.0,   90.0),  1),   # %
-        "irradiance":      round(random.uniform(0.0,    1000.0),1),   # W/m²
-        "temperature":     round(random.uniform(15.0,   35.0),  1),   # °C
-        "rollangle":       round(random.uniform(-2.0,   2.0),   2),   # °
-        "tiltangle":       round(random.uniform(10.0,   30.0),  1),   # °
-    }
+    CAMPOS = [
+        "CurrentBattery", "PowerBattery", "SoCBattery", "VoltageBattery",
+        "carga_total", "power_fronius", "power_grid", "power_quattro",
+        "irradiance", "temperature", "EnergiaFroniusSc", "EnergiaIlumSc",
+        "EnergiaMicrosSc", "PowerFroniusSc", "PowerIlumSc", "PowerMicrosSc",
+        "Piso1", "Piso2", "Piso3", "isla", "EnergiaPM5500",
+    ]
+
+    # Construir el filtro de campos para la query Flux
+    campos_flux = " or ".join([f'r._field == "{c}"' for c in CAMPOS])
+
+    try:
+        client = InfluxDBClient(
+            url=INFLUX_URL,
+            token=INFLUX_TOKEN,
+            org=INFLUX_ORG
+        )
+        query_api = client.query_api()
+
+        query = f'''
+        from(bucket: "{INFLUX_BUCKET}")
+          |> range(start: -60d)
+          |> filter(fn: (r) => r._measurement == "{MEASUREMENT_DATA}")
+          |> filter(fn: (r) => {campos_flux})
+          |> last()
+        '''
+
+        resultado = query_api.query(query=query, org=INFLUX_ORG)
+        client.close()
+
+        mediciones = {"_time": datetime.now(timezone.utc)}
+        for tabla in resultado:
+            for registro in tabla.records:
+                mediciones[registro.get_field()] = registro.get_value()
+
+        return mediciones
+
+    except Exception as e:
+        print(f"Error InfluxDB get_mediciones: {e}")
+        return {
+            "_time":          datetime.now(timezone.utc),
+            "CurrentBattery": 0, "PowerBattery":  0, "SoCBattery":    0,
+            "VoltageBattery": 0, "carga_total":   0, "power_fronius": 0,
+            "power_grid":     0, "power_quattro": 0, "irradiance":    0,
+            "temperature":    0,
+        }
 
 
 # -----------------------------------------------------------------------------
@@ -145,70 +193,108 @@ def _guardar_estados() -> None:
 
 def set_contactor(nombre: str, estado: bool) -> None:
     """
-    Cambia el estado de un contactor.
-
-    Args:
-        nombre: clave del contactor en _estados,
-                p. ej. "estado_operador_red".
-        estado: True = ISLANDED, False = CONNECTED.
-
-    Raises:
-        KeyError  si el nombre no existe en _estados.
-        TypeError si estado no es bool.
-
-    Cuando se conecte InfluxDB:
-        Reemplazar el cuerpo por una escritura al bucket de control:
-            punto = Point("control")
-                      .field(nombre, estado)
-                      .time(datetime.now(timezone.utc))
-            write_api.write(bucket=BUCKET_CONTROL, record=punto)
+    Escribe el nuevo estado de un contactor en el bucket Control de InfluxDB.
     """
+    from influxdb_client import InfluxDBClient, Point
+    from influxdb_client.client.write_api import SYNCHRONOUS
+
     if nombre not in _estados:
-        raise KeyError(f"Contactor desconocido: '{nombre}'. "
-                       f"Claves válidas: {list(_estados.keys())}")
+        raise KeyError(f"Contactor desconocido: '{nombre}'.")
     if not isinstance(estado, bool):
         raise TypeError(f"estado debe ser bool, recibido: {type(estado)}")
 
-    _estados[nombre] = estado
-    _guardar_estados()   
+
+    INFLUX_BUCKET = INFLUX_BUCKET_CTRL
+
+    try:
+        client = InfluxDBClient(
+            url=INFLUX_URL,
+            token=INFLUX_TOKEN,
+            org=INFLUX_ORG
+        )
+        write_api = client.write_api(write_options=SYNCHRONOUS)
+
+        punto = Point(MEASUREMENT_CTRL) \
+            .field(nombre, int(estado)) \
+            .time(datetime.now(timezone.utc))
+
+        write_api.write(bucket=INFLUX_BUCKET, org=INFLUX_ORG, record=punto)
+        client.close()
+
+        # Actualizar también en memoria para respuesta inmediata
+        _estados[nombre] = estado
+        _guardar_estados()
+
+    except Exception as e:
+        print(f"Error InfluxDB set_contactor: {e}")
+        # Si falla InfluxDB, al menos actualiza en memoria
+        _estados[nombre] = estado
 
 
 def set_setpoint(valor: float) -> None:
-    """
-    Actualiza el setpoint de potencia del inversor.
+    from influxdb_client import InfluxDBClient, Point
+    from influxdb_client.client.write_api import SYNCHRONOUS
 
-    Args:
-        valor: potencia de referencia en kW. Rango esperado 0–15 kW.
-
-    Raises:
-        ValueError si valor está fuera del rango 0–15.
-
-    Cuando se conecte InfluxDB:
-        Escribir campo "setpoint_potencia_kw" en bucket de control.
-    """
     if not (0.0 <= valor <= 15.0):
         raise ValueError(f"Setpoint fuera de rango [0, 15] kW: {valor}")
 
-    _estados["setpoint_potencia_kw"] = float(valor)
-    _guardar_estados()
+
+    INFLUX_BUCKET = INFLUX_BUCKET_CTRL
+
+    try:
+        client = InfluxDBClient(
+            url=INFLUX_URL,
+            token=INFLUX_TOKEN,
+            org=INFLUX_ORG
+        )
+        write_api = client.write_api(write_options=SYNCHRONOUS)
+
+        punto = Point(MEASUREMENT_CTRL) \
+            .field("setpoint_potencia_kw", float(valor)) \
+            .time(datetime.now(timezone.utc))
+
+        write_api.write(bucket=INFLUX_BUCKET, org=INFLUX_ORG, record=punto)
+        client.close()
+
+        _estados["setpoint_potencia_kw"] = float(valor)
+        _guardar_estados()
+
+    except Exception as e:
+        print(f"Error InfluxDB set_setpoint: {e}")
+        _estados["setpoint_potencia_kw"] = float(valor)
 
 
 def set_modo_isla(activo: bool) -> None:
-    """
-    Activa o desactiva el modo isla del sistema.
+    from influxdb_client import InfluxDBClient, Point
+    from influxdb_client.client.write_api import SYNCHRONOUS
 
-    Args:
-        activo: True = modo isla activado, False = modo conectado a red.
-
-    Cuando se conecte InfluxDB:
-        Escribir campo "modo_isla" en bucket de control.
-    """
     if not isinstance(activo, bool):
         raise TypeError(f"activo debe ser bool, recibido: {type(activo)}")
 
-    _estados["modo_isla"] = activo
-    _guardar_estados()   
 
+    INFLUX_BUCKET = INFLUX_BUCKET_CTRL
+
+    try:
+        client = InfluxDBClient(
+            url=INFLUX_URL,
+            token=INFLUX_TOKEN,
+            org=INFLUX_ORG
+        )
+        write_api = client.write_api(write_options=SYNCHRONOUS)
+
+        punto = Point(MEASUREMENT_CTRL) \
+            .field("modo_isla", int(activo)) \
+            .time(datetime.now(timezone.utc))
+
+        write_api.write(bucket=INFLUX_BUCKET, org=INFLUX_ORG, record=punto)
+        client.close()
+
+        _estados["modo_isla"] = activo
+        _guardar_estados()
+
+    except Exception as e:
+        print(f"Error InfluxDB set_modo_isla: {e}")
+        _estados["modo_isla"] = activo
 
 # -----------------------------------------------------------------------------
 # UTILIDAD — mapeo toggle-id → clave de estado

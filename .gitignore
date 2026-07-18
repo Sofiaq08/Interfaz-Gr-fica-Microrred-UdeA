@@ -1,0 +1,13 @@
+# Datos grandes
+Datos/*.csv
+
+# Token de InfluxDB
+Datos/token_influx.txt
+Datos/prueba_datos.py
+
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+
+# Archivos comprimidos
+*.zip
