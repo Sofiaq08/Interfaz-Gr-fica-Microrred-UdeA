@@ -108,13 +108,13 @@ _TOGGLE_A_ESTADO = {
     "toggle-electrolizador": "estado_electrolizador",
     "toggle-enphase":        "estado_enphase",
     "toggle-gab-ilum":       "estado_gab_ilum",
-    "toggle-piso1-ilum":     "estado_piso1_ilum",
-    "toggle-piso2-ilum":     "estado_piso2_ilum",
-    "toggle-piso3-ilum":     "estado_piso3_ilum",
+    "toggle-piso1-ilum":     "piso1P",
+    "toggle-piso2-ilum":     "piso2P",
+    "toggle-piso3-ilum":     "piso3P",
     "toggle-gab-exp":        "estado_gab_exp",
     "toggle-piso1-exp":      "estado_piso1_exp",
     "toggle-piso2-exp":      "estado_piso2_exp",
-    "toggle-quattro-or":     "estado_quattro_or",
+    "toggle-quattro-or":     "islaP",
 }
 
 

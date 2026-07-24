@@ -12,10 +12,10 @@ from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 from datetime import datetime, timezone
 
-INFLUX_URL    = "http://localhost:8086"
-INFLUX_TOKEN  = "BAYhSxshHUM6sHDULAWHrW_v5XHova6DYE2xik4bcFJHUU9_o61t5vOQdywKs56PVo1C5V5VOBD4CAOa8FYFTA=="
-INFLUX_ORG    = "Universidad de Antioquia"
-INFLUX_BUCKET = "Control"
+INFLUX_URL    = "https://us-east-1-1.aws.cloud2.influxdata.com"
+INFLUX_TOKEN  = "3xJSNJ4AEKl2Y3AMcpJDKFzxoP44zrI5hC6YTZzRKBlxg428ujnIUWeqrMpOdsIexoFfBQL-EMm3kOBFg6V3Ig=="
+INFLUX_ORG    = "UdeA"
+INFLUX_BUCKET = "Microrred"
 
 # Estado inicial de los 13 contactores + 2 variables de control
 ESTADO_INICIAL = {
@@ -26,13 +26,13 @@ ESTADO_INICIAL = {
     "estado_electrolizador": True,
     "estado_enphase":        True,
     "estado_gab_ilum":       False,
-    "estado_piso1_ilum":     True,
-    "estado_piso2_ilum":     True,
-    "estado_piso3_ilum":     True,
+    "piso1P":     True,
+    "piso2P":     True,
+    "piso3P":     True,
     "estado_gab_exp":        False,
     "estado_piso1_exp":      True,
     "estado_piso2_exp":      True,
-    "estado_quattro_or":     True,
+    "islaP":     True,
 
     # Variables de control
     "setpoint_potencia_kw":  0.0,

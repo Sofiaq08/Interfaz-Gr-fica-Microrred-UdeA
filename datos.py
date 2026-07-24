@@ -31,13 +31,13 @@ _estados = {
     "estado_electrolizador": True,
     "estado_enphase":        True,
     "estado_gab_ilum":       False,
-    "estado_piso1_ilum":     True,
-    "estado_piso2_ilum":     True,
-    "estado_piso3_ilum":     True,
+    "piso1P":     True,
+    "piso2P":     True,
+    "piso3P":     True,
     "estado_gab_exp":        False,
     "estado_piso1_exp":      True,
     "estado_piso2_exp":      True,
-    "estado_quattro_or":     True,
+    "islaP":     True,
 
     # ── Variables de control (campos nuevos que se crearán en InfluxDB) ───────
     "setpoint_potencia_kw":  0.0,   # float  — potencia de referencia del inversor
@@ -308,11 +308,11 @@ TOGGLE_A_ESTADO = {
     "toggle-electrolizador": "estado_electrolizador",
     "toggle-enphase":        "estado_enphase",
     "toggle-gab-ilum":       "estado_gab_ilum",
-    "toggle-piso1-ilum":     "estado_piso1_ilum",
-    "toggle-piso2-ilum":     "estado_piso2_ilum",
-    "toggle-piso3-ilum":     "estado_piso3_ilum",
+    "toggle-piso1-ilum":     "piso1P",
+    "toggle-piso2-ilum":     "piso2P",
+    "toggle-piso3-ilum":     "piso3P",
     "toggle-gab-exp":        "estado_gab_exp",
     "toggle-piso1-exp":      "estado_piso1_exp",
     "toggle-piso2-exp":      "estado_piso2_exp",
-    "toggle-quattro-or":     "estado_quattro_or",
+    "toggle-quattro-or":     "islaP",
 }

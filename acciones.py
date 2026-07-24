@@ -111,12 +111,12 @@ def cerrar_gab_ilum() -> None:
 
 def abrir_piso1_ilum() -> None:
     """Abre el contactor de Iluminación Piso 1 → ISLANDED (True)."""
-    _set_contactor("estado_piso1_ilum", True)
+    _set_contactor("piso1P", True)
 
 
 def cerrar_piso1_ilum() -> None:
     """Cierra el contactor de Iluminación Piso 1 → CONNECTED (False)."""
-    _set_contactor("estado_piso1_ilum", False)
+    _set_contactor("piso1P", False)
 
 
 # -----------------------------------------------------------------------------
@@ -125,12 +125,12 @@ def cerrar_piso1_ilum() -> None:
 
 def abrir_piso2_ilum() -> None:
     """Abre el contactor de Iluminación Piso 2 → ISLANDED (True)."""
-    _set_contactor("estado_piso2_ilum", True)
+    _set_contactor("piso2P", True)
 
 
 def cerrar_piso2_ilum() -> None:
     """Cierra el contactor de Iluminación Piso 2 → CONNECTED (False)."""
-    _set_contactor("estado_piso2_ilum", False)
+    _set_contactor("piso2P", False)
 
 
 # -----------------------------------------------------------------------------
@@ -139,12 +139,12 @@ def cerrar_piso2_ilum() -> None:
 
 def abrir_piso3_ilum() -> None:
     """Abre el contactor de Iluminación Piso 3 → ISLANDED (True)."""
-    _set_contactor("estado_piso3_ilum", True)
+    _set_contactor("piso3P", True)
 
 
 def cerrar_piso3_ilum() -> None:
     """Cierra el contactor de Iluminación Piso 3 → CONNECTED (False)."""
-    _set_contactor("estado_piso3_ilum", False)
+    _set_contactor("piso3P", False)
 
 
 # -----------------------------------------------------------------------------
@@ -180,12 +180,12 @@ def cerrar_piso1_exp() -> None:
 
 def abrir_quattro_or() -> None:
     """Abre el contactor Quattro-OR → estado ISLANDED (True)."""
-    _set_contactor("estado_quattro_or", True)
+    _set_contactor("islaP", True)
 
 
 def cerrar_quattro_or() -> None:
     """Cierra el contactor Quattro-OR → estado CONNECTED (False)."""
-    _set_contactor("estado_quattro_or", False)
+    _set_contactor("islaP", False)
 
 # -----------------------------------------------------------------------------
 # GABINETE EXPERIMENTALES — PISO 2 (6 kW)
