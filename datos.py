@@ -197,7 +197,7 @@ def set_contactor(nombre: str, estado: bool) -> None:
     """
     from influxdb_client import InfluxDBClient, Point
     from influxdb_client.client.write_api import SYNCHRONOUS
-
+    
     if nombre not in _estados:
         raise KeyError(f"Contactor desconocido: '{nombre}'.")
     if not isinstance(estado, bool):
