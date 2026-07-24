@@ -369,7 +369,7 @@ app.layout = html.Div(
         ),
 
         # ── Componentes no visuales ──────────────────────────────────────────
-        dcc.Interval(id="intervalo", interval=3000, n_intervals=0),
+        dcc.Interval(id="intervalo", interval=1000, n_intervals=0),
 
         # Store para el log de las ultimas N acciones
         dcc.Store(id="store-log", data=[]),

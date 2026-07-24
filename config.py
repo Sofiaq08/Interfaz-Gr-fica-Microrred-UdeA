@@ -17,5 +17,5 @@ INFLUX_BUCKET_CTRL = "Microrred"                 # cambiar a bucket de control d
 MEASUREMENT_CTRL   = "control"
 
 # ── App ───────────────────────────────────────────────────────────────────────
-INTERVALO_REFRESCO = 3000    # milisegundos entre refrescos del diagrama
+INTERVALO_REFRESCO = 1000    # milisegundos entre refrescos del diagrama
 DEBUG              = True    # cambiar a False en producción
