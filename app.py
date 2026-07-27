@@ -281,28 +281,6 @@ app.layout = html.Div(
                             html.Div(id="panel-variables"),
                         ], extra_style={"flex": "2", "minWidth": "320px"}),
 
-                        # ── Control de modo isla ─────────────────────────────
-                        card([
-                            etiqueta_seccion("Modo de operación"),
-                            html.Button(
-                                id="btn-modo-isla",
-                                n_clicks=0,
-                                style={
-                                    "width":         "100%",
-                                    "padding":       "9px",
-                                    "borderRadius":  "7px",
-                                    "border":        "none",
-                                    "cursor":        "pointer",
-                                    "fontWeight":    "700",
-                                    "fontSize":      "12px",
-                                    "letterSpacing": "0.5px",
-                                    "backgroundColor": C["muted"],
-                                    "color":         C["text"],
-                                    "transition":    "background-color 0.2s",
-                                },
-                            ),
-                        ], extra_style={"flex": "1", "minWidth": "200px"}),
-
                         # ── Setpoint de potencia ─────────────────────────────
                         card([
                             etiqueta_seccion("Setpoint de potencia"),
@@ -485,8 +463,6 @@ def cb_toggle_contactor(*args):
 @callback(
     Output("svg-container",    "children"),
     Output("panel-variables",  "children"),
-    Output("btn-modo-isla",    "children"),
-    Output("btn-modo-isla",    "style"),
     Output("indicador-isla",   "children"),
     Output("log-acciones",     "children"),
     Input("intervalo",         "n_intervals"),
@@ -550,7 +526,7 @@ def cb_actualizar_vista(n_intervals, trigger, log):
         log_div = html.P("Sin acciones recientes.",
                          style={"margin": "0", "fontStyle": "italic"})
 
-    return svg_div, panel, btn_txt, btn_style, ind_txt, log_div
+    return svg_div, panel, ind_txt, log_div
 
 
 # =============================================================================
@@ -571,31 +547,6 @@ def cb_setpoint(n_clicks, valor):
         return msg
     except ValueError as e:
         return f"⚠ {e}"
-
-
-# =============================================================================
-# CALLBACK 4 — Modo isla
-# =============================================================================
-
-@callback(
-    Output("store-trigger", "data", allow_duplicate=True),
-    Output("store-log",     "data", allow_duplicate=True),
-    Input("btn-modo-isla",  "n_clicks"),
-    State("store-log",      "data"),
-    prevent_initial_call=True,
-)
-def cb_modo_isla(n_clicks, log_actual):
-    if n_clicks == 0:
-        raise PreventUpdate
-
-    msg = acciones.toggle_modo_isla()
-
-    from datetime import datetime
-    hora    = datetime.now().strftime("%H:%M:%S")
-    entrada = f"[{hora}] {msg}"
-    nuevo_log = ([entrada] + log_actual)[:6]
-
-    return n_clicks, nuevo_log
 
 
 # ENTRAR EN LOCAL===============================

@@ -41,7 +41,6 @@ _estados = {
 
     # ── Variables de control (campos nuevos que se crearán en InfluxDB) ───────
     "setpoint_potencia_kw":  0.0,   # float  — potencia de referencia del inversor
-    "modo_isla":             False,  # bool   — True = sistema en modo isla
 }
 
 

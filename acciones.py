@@ -245,27 +245,3 @@ def aplicar_setpoint(valor: float) -> str:
     datos.set_setpoint(float(valor))
     return f"✓ Setpoint de {valor} kW aplicado."
 
-
-# -----------------------------------------------------------------------------
-# MODO ISLA
-# -----------------------------------------------------------------------------
-
-def activar_modo_isla() -> str:
-    """Activa el modo isla (desconecta la microrred de la red pública)."""
-    datos.set_modo_isla(True)
-    return "✓ Modo isla ACTIVADO."
-
-
-def desactivar_modo_isla() -> str:
-    """Desactiva el modo isla (reconecta la microrred a la red pública)."""
-    datos.set_modo_isla(False)
-    return "✓ Modo isla DESACTIVADO."
-
-
-def toggle_modo_isla() -> str:
-    """Invierte el modo isla. Retorna mensaje de confirmación."""
-    estado_actual = datos.get_estados()["modo_isla"]
-    if estado_actual:
-        return desactivar_modo_isla()
-    else:
-        return activar_modo_isla()
