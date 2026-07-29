@@ -214,7 +214,7 @@ def set_contactor(nombre: str, estado: bool) -> None:
         write_api = client.write_api(write_options=SYNCHRONOUS)
 
         punto = Point(MEASUREMENT_CTRL) \
-            .field(nombre, int(estado)) \
+            .field(nombre, float(estado)) \
             .time(datetime.now(timezone.utc))
 
         write_api.write(bucket=INFLUX_BUCKET, org=INFLUX_ORG, record=punto)
@@ -282,7 +282,7 @@ def set_modo_isla(activo: bool) -> None:
         write_api = client.write_api(write_options=SYNCHRONOUS)
 
         punto = Point(MEASUREMENT_CTRL) \
-            .field("modo_isla", int(activo)) \
+            .field("modo_isla", float(activo)) \
             .time(datetime.now(timezone.utc))
 
         write_api.write(bucket=INFLUX_BUCKET, org=INFLUX_ORG, record=punto)

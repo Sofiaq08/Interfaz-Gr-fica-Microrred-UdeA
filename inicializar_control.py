@@ -48,12 +48,12 @@ client = InfluxDBClient(
 write_api = client.write_api(write_options=SYNCHRONOUS)
 
 # Crear un punto con todos los estados
-punto = Point("control").time(datetime.now(timezone.utc))
+punto = Point("control_estados").time(datetime.now(timezone.utc))
 
 for campo, valor in ESTADO_INICIAL.items():
     # InfluxDB guarda bool como 0/1 para facilitar las queries
     if isinstance(valor, bool):
-        punto = punto.field(campo, int(valor))
+        punto = punto.field(campo, float(valor))
     else:
         punto = punto.field(campo, float(valor))
 
