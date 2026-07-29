@@ -14,7 +14,7 @@ MEASUREMENT_DATA   = "prueba"            # cambiar a nombre real cuando el profe
 
 # ── InfluxDB — Control (lectura y escritura) ──────────────────────────────────
 INFLUX_BUCKET_CTRL = "microgrid"                 # cambiar a bucket de control de la nube
-MEASUREMENT_CTRL   = "prueba"
+MEASUREMENT_CTRL   = "control_estados"
 
 # ── App ───────────────────────────────────────────────────────────────────────
 INTERVALO_REFRESCO = 5000    # milisegundos entre refrescos del diagrama
