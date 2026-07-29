@@ -7,14 +7,14 @@
 
 # ── InfluxDB — Mediciones (lectura) ──────────────────────────────────────────
 INFLUX_URL         = "https://us-east-1-1.aws.cloud2.influxdata.com"   # cambiar a URL de la nube cuando esté listo
-INFLUX_TOKEN       = "3xJSNJ4AEKl2Y3AMcpJDKFzxoP44zrI5hC6YTZzRKBlxg428ujnIUWeqrMpOdsIexoFfBQL-EMm3kOBFg6V3Ig=="  
-INFLUX_ORG         = "UdeA"                    # cambiar a "colombia" cuando sea la nube
-INFLUX_BUCKET_DATA = "Microrred"               # cambiar a "microgrid" cuando sea la nube
-MEASUREMENT_DATA   = "microgridDB1"            # cambiar a nombre real cuando el profesor confirme
+INFLUX_TOKEN       = "ogJtAMxVe9SO75JNiIEdLhoy7UKM0DyH7ZD-O5Q-Xyg3xjY8jY2L_Cpm6hvreBsomzvOz3FPX9qg09PD3QQQmg=="  
+INFLUX_ORG         = "colombia"                    # cambiar a "colombia" cuando sea la nube
+INFLUX_BUCKET_DATA = "microgrid"               # cambiar a "microgrid" cuando sea la nube
+MEASUREMENT_DATA   = "prueba"            # cambiar a nombre real cuando el profesor confirme
 
 # ── InfluxDB — Control (lectura y escritura) ──────────────────────────────────
-INFLUX_BUCKET_CTRL = "Microrred"                 # cambiar a bucket de control de la nube
-MEASUREMENT_CTRL   = "control"
+INFLUX_BUCKET_CTRL = "microgrid"                 # cambiar a bucket de control de la nube
+MEASUREMENT_CTRL   = "prueba"
 
 # ── App ───────────────────────────────────────────────────────────────────────
 INTERVALO_REFRESCO = 5000    # milisegundos entre refrescos del diagrama
