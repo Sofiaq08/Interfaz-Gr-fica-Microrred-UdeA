@@ -13,9 +13,9 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 from datetime import datetime, timezone
 
 INFLUX_URL    = "https://us-east-1-1.aws.cloud2.influxdata.com"
-INFLUX_TOKEN  = "3xJSNJ4AEKl2Y3AMcpJDKFzxoP44zrI5hC6YTZzRKBlxg428ujnIUWeqrMpOdsIexoFfBQL-EMm3kOBFg6V3Ig=="
-INFLUX_ORG    = "UdeA"
-INFLUX_BUCKET = "Microrred"
+INFLUX_TOKEN  = "ogJtAMxVe9SO75JNiIEdLhoy7UKM0DyH7ZD-O5Q-Xyg3xjY8jY2L_Cpm6hvreBsomzvOz3FPX9qg09PD3QQQmg=="
+INFLUX_ORG    = "colombia"
+INFLUX_BUCKET = "microgrid"
 
 # Estado inicial de los 13 contactores + 2 variables de control
 ESTADO_INICIAL = {
